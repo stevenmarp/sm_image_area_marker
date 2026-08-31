@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="sm_image_area_marker.ImageMarkerField">
+        <div t-attf-class="oe_fileupload sm_iam_field {{ props.className or '' }}" aria-atomic="true">
+            <div class="o_attachments sm_iam_attachments">
+                <div t-foreach="files" t-as="file" t-key="file.id"
+                     class="sm_iam_thumb" t-att-title="file.name">
+                    <div class="sm_iam_thumb_image" t-on-click="() => this.openMarker(file)">
+                        <img t-if="isImage(file)" class="sm_iam_preview object-fit-cover rounded"
+                             t-att-src="imageUrl(file)"
+                             t-att-alt="file.name"
+                             onerror="this.src = '/web/static/img/mimetypes/image.svg'"/>
+                        <span t-else="" class="o_image sm_iam_preview"
+                              t-att-data-mimetype="file.mimetype"
+                              t-att-data-ext="getExtension(file)" role="img"/>
+                        <span class="sm_iam_hint"><i class="fa fa-pencil me-1"/>Mark</span>
+                    </div>
+                    <div class="sm_iam_caption">
+                        <a t-att-href="getUrl(file.id)" download=""
+                           t-att-data-tooltip="'Download ' + file.name"
+                           t-on-click.stop=""><t t-esc="file.name"/></a>
+                    </div>
+                    <div t-if="!props.readonly" class="sm_iam_remove"
+                         t-on-click.stop="() => this.onFileRemove(file.id)">
+                        <span role="img" aria-label="Delete" title="Delete">×</span>
+                    </div>
+                </div>
+            </div>
+            <div t-if="!props.readonly and (!props.numberOfFiles or files.length &lt; props.numberOfFiles)"
+                 class="oe_add">
+                <FileInput
+                    acceptedFileExtensions="props.acceptedFileExtensions or 'image/*'"
+                    multiUpload="true"
+                    onUpload.bind="onFileUploaded"
+                    resModel="props.record.resModel"
+                    resId="props.record.resId or 0"
+                >
+                    <button class="btn btn-secondary o_attach" data-tooltip="Attach">
+                        <span class="fa fa-picture-o me-1" aria-label="Attach"/><t t-esc="uploadText"/>
+                    </button>
+                </FileInput>
+            </div>
+        </div>
+    </t>
+
+</templates>

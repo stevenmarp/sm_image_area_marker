@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_template_form_view_marked_images" model="ir.ui.view">
+        <field name="name">product.template.form.marked.images</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page string="Marked Images" name="sm_marked_images">
+                    <field name="marked_image_ids" widget="image_marker" nolabel="1"
+                           options="{'accepted_file_extensions': 'image/*'}"/>
+                    <div class="text-muted">
+                        Upload the pictures from as many angles as the job needs, then click
+                        one to draw on it. Saving writes the marked picture over the
+                        original, so everything already pointing at it shows the marks.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

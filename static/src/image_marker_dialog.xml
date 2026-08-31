@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="sm_image_area_marker.ImageMarkerDialog">
+        <Dialog size="'xl'" title="props.name or 'Mark the picture'" contentClass="'sm_iam_dialog'">
+            <div t-if="!props.readonly" class="sm_iam_toolbar">
+                <div class="btn-group me-3" role="group" aria-label="Tools">
+                    <button t-foreach="tools" t-as="tool" t-key="tool.id"
+                            type="button"
+                            t-attf-class="btn btn-sm {{ state.tool === tool.id ? 'btn-primary' : 'btn-secondary' }}"
+                            t-att-title="tool.label"
+                            t-on-click="() => state.tool = tool.id">
+                        <i t-attf-class="fa {{ tool.icon }}"/>
+                        <span class="ms-1 d-none d-md-inline" t-esc="tool.label"/>
+                    </button>
+                </div>
+
+                <div class="sm_iam_colors me-3">
+                    <button t-foreach="colors" t-as="color" t-key="color"
+                            type="button"
+                            t-attf-class="sm_iam_color {{ state.color === color ? 'sm_iam_color_on' : '' }}"
+                            t-attf-style="background-color: {{ color }};"
+                            t-att-title="color"
+                            t-on-click="() => state.color = color"/>
+                </div>
+
+                <div class="btn-group me-3" role="group" aria-label="Thickness">
+                    <button t-foreach="[1, 2, 3]" t-as="size" t-key="size"
+                            type="button"
+                            t-attf-class="btn btn-sm {{ state.size === size ? 'btn-primary' : 'btn-secondary' }}"
+                            t-on-click="() => state.size = size">
+                        <span t-esc="'·••'[size - 1]"/>
+                    </button>
+                </div>
+
+                <input type="text" class="form-control form-control-sm sm_iam_note me-3"
+                       placeholder="Note to place with the Note tool"
+                       t-model="state.note"/>
+
+                <div class="btn-group ms-auto" role="group">
+                    <button type="button" class="btn btn-sm btn-secondary"
+                            t-att-disabled="!state.shapes.length"
+                            t-on-click="undo">
+                        <i class="fa fa-undo me-1"/>Undo
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary"
+                            t-att-disabled="!state.shapes.length"
+                            t-on-click="clear">
+                        <i class="fa fa-trash-o me-1"/>Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="sm_iam_canvas_wrap">
+                <canvas t-ref="canvas" class="sm_iam_canvas"
+                        t-att-class="{ sm_iam_drawing: !props.readonly }"
+                        t-on-pointerdown="onPointerDown"
+                        t-on-pointermove="onPointerMove"
+                        t-on-pointerup="onPointerUp"
+                        t-on-pointercancel="onPointerUp"/>
+            </div>
+
+            <t t-set-slot="footer">
+                <button t-if="!props.readonly" class="btn btn-primary"
+                        t-att-disabled="state.saving"
+                        t-on-click="save">
+                    Save over the picture
+                </button>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">
+                    <t t-if="props.readonly">Close</t>
+                    <t t-else="">Discard</t>
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>
